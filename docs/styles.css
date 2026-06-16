@@ -102,6 +102,13 @@ nav a.feature-link {
   font-weight: 700;
 }
 
+nav a.source-link {
+  border-color: var(--accent);
+  background: #ecfeff;
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
 main {
   padding: 42px 0 64px;
 }
@@ -201,6 +208,10 @@ p {
 
 .card p {
   color: var(--muted);
+}
+
+.source-card {
+  border-color: var(--accent);
 }
 
 .actions {

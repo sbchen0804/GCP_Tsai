@@ -121,6 +121,13 @@ nav a.feature-link {
   font-weight: 700;
 }
 
+nav a.source-link {
+  border-color: var(--accent);
+  background: #ecfeff;
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
 main {
   padding: 42px 0 64px;
 }
@@ -222,6 +229,10 @@ p {
   color: var(--muted);
 }
 
+.source-card {
+  border-color: var(--accent);
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -314,13 +325,14 @@ footer {
 def page(title: str, body: str, active: str = "") -> str:
     links = [
         ("index.html", "1. 首頁", "首頁", ""),
-        ("01-gcp-tasi-pdf.html", "2. 簡報", "簡報", ""),
-        ("02-gcp-tasi-word.html", "3. 文章", "文章", ""),
+        ("01-gcp-tsai-pdf.html", "2. 簡報", "簡報", ""),
+        ("02-gcp-tsai-word.html", "3. 文章", "文章", ""),
         ("03-gcp-ban02m-image.html", "4. 圖片", "圖片", ""),
         ("04-speech-summary.html", "5. 語音", "語音", "feature-link"),
+        ("https://youtu.be/rx4NNViz0e0", "6. 來源影片(Dr. Tsai)", "來源影片", "source-link"),
     ]
     nav = "\n".join(
-        f'<a href="{href}" class="{css_class}"{" aria-current=\"page\"" if key == active else ""}>{label}</a>'
+        f'<a href="{href}" class="{css_class}"{" aria-current=\"page\"" if key == active else ""}{ " target=\"_blank\" rel=\"noopener\"" if href.startswith("https://") else ""}>{label}</a>'
         for href, label, key, css_class in links
     )
     return f"""<!doctype html>
@@ -380,7 +392,7 @@ def article_html(docx_path: Path) -> tuple[str, str]:
         '<section class="hero">',
         '<div class="kicker">文章</div>',
         f"<h1>{html.escape(title)}</h1>",
-        '<div class="actions"><a class="button" href="assets/02_GCP_TASI.docx">下載原始檔</a></div>',
+        '<div class="actions"><a class="button" href="assets/02_GCP_Tsai.docx">下載原始檔</a></div>',
         "</section>",
         '<article class="article">',
     ]
@@ -414,14 +426,29 @@ def write(path: Path, content: str) -> None:
 def main() -> None:
     SITE.mkdir(exist_ok=True)
     ASSETS.mkdir(parents=True, exist_ok=True)
+    for stale in (
+        SITE / "01-gcp-tasi-pdf.html",
+        SITE / "02-gcp-tasi-word.html",
+        ASSETS / "01_GCP_TASI.pdf",
+        ASSETS / "02_GCP_TASI.docx",
+    ):
+        if stale.exists():
+            stale.unlink()
 
     pdf = SOURCE / "01_GCP_TASI.pdf"
     docx = SOURCE / "02_GCP_TASI.docx"
     image = SOURCE / "03_GCP_ban02m.png"
     speech = SOURCE / "04_AI_Speech_Summary.mp4"
 
-    for src in (pdf, docx, image, speech):
-        shutil.copy2(src, ASSETS / src.name)
+    asset_names = {
+        pdf: "01_GCP_Tsai.pdf",
+        docx: "02_GCP_Tsai.docx",
+        image: "03_GCP_ban02m.png",
+        speech: "04_AI_Speech_Summary.mp4",
+    }
+
+    for src, name in asset_names.items():
+        shutil.copy2(src, ASSETS / name)
 
     write(SITE / "styles.css", CSS + "\n")
 
@@ -446,12 +473,12 @@ def main() -> None:
   <span class="button">前往語音</span>
 </a>
 <section class="grid" aria-label="資料列表">
-  <a class="card" href="01-gcp-tasi-pdf.html">
+  <a class="card" href="01-gcp-tsai-pdf.html">
     <span class="kicker">1</span>
     <h2>簡報</h2>
     <p>{pdf_pages} 頁簡報，可線上閱讀並下載原始檔。</p>
   </a>
-  <a class="card" href="02-gcp-tasi-word.html">
+  <a class="card" href="02-gcp-tsai-word.html">
     <span class="kicker">2</span>
     <h2>文章</h2>
     <p>已轉成適合手機與電腦閱讀的文章頁。</p>
@@ -466,6 +493,11 @@ def main() -> None:
     <h2>語音</h2>
     <p>語音摘要約 {speech_mb:.1f} MB，支援線上播放。</p>
   </a>
+  <a class="card source-card" href="https://youtu.be/rx4NNViz0e0" target="_blank" rel="noopener">
+    <span class="kicker">5</span>
+    <h2>來源影片</h2>
+    <p>蔡博士原始語音檔來源影片，將開啟 YouTube 連結。</p>
+  </a>
 </section>
 """
     write(SITE / "index.html", page("資料整理", index_body, "首頁"))
@@ -476,18 +508,18 @@ def main() -> None:
   <h1>簡報線上閱讀</h1>
   <p class="meta">共 {pdf_pages} 頁。若瀏覽器沒有顯示內容，可使用下方按鈕開啟或下載原始檔。</p>
   <div class="actions">
-    <a class="button" href="assets/01_GCP_TASI.pdf">開啟檔案</a>
-    <a class="button" href="assets/01_GCP_TASI.pdf" download>下載檔案</a>
+    <a class="button" href="assets/01_GCP_Tsai.pdf">開啟檔案</a>
+    <a class="button" href="assets/01_GCP_Tsai.pdf" download>下載檔案</a>
   </div>
 </section>
-<object class="reader" data="assets/01_GCP_TASI.pdf" type="application/pdf">
-  <p>瀏覽器無法內嵌簡報。請改用 <a href="assets/01_GCP_TASI.pdf">檔案連結</a> 開啟。</p>
+<object class="reader" data="assets/01_GCP_Tsai.pdf" type="application/pdf">
+  <p>瀏覽器無法內嵌簡報。請改用 <a href="assets/01_GCP_Tsai.pdf">檔案連結</a> 開啟。</p>
 </object>
 """
-    write(SITE / "01-gcp-tasi-pdf.html", page("簡報", pdf_body, "簡報"))
+    write(SITE / "01-gcp-tsai-pdf.html", page("簡報", pdf_body, "簡報"))
 
     article_title, article_body = article_html(docx)
-    write(SITE / "02-gcp-tasi-word.html", page(article_title, article_body, "文章"))
+    write(SITE / "02-gcp-tsai-word.html", page(article_title, article_body, "文章"))
 
     image_body = f"""
 <section class="hero">
@@ -531,10 +563,11 @@ def main() -> None:
 ## 內容
 
 - `docs/index.html`: 首頁
-- `docs/01-gcp-tasi-pdf.html`: 簡報線上閱讀頁
-- `docs/02-gcp-tasi-word.html`: 文章頁
+- `docs/01-gcp-tsai-pdf.html`: 簡報線上閱讀頁
+- `docs/02-gcp-tsai-word.html`: 文章頁
 - `docs/03-gcp-ban02m-image.html`: 圖片瀏覽頁
 - `docs/04-speech-summary.html`: 語音頁
+- 來源影片(Dr. Tsai): https://youtu.be/rx4NNViz0e0
 - `docs/assets/`: 原始檔案
 
 ## GitHub Pages 設定
