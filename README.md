@@ -4,12 +4,12 @@
 
 ## 內容
 
-- `site/index.html`: 首頁
-- `site/01-gcp-tasi-pdf.html`: PDF 簡報線上閱讀頁
-- `site/02-gcp-tasi-word.html`: Word 轉換後的 HTML 文章頁
-- `site/03-gcp-ban02m-image.html`: 圖片瀏覽頁
-- `site/assets/`: 原始 PDF、Word、PNG 檔案
+- `docs/index.html`: 首頁
+- `docs/01-gcp-tasi-pdf.html`: PDF 簡報線上閱讀頁
+- `docs/02-gcp-tasi-word.html`: Word 轉換後的 HTML 文章頁
+- `docs/03-gcp-ban02m-image.html`: 圖片瀏覽頁
+- `docs/assets/`: 原始 PDF、Word、PNG 檔案
 
 ## GitHub Pages 設定
 
-上傳到 GitHub 後，可在 repository 的 Settings -> Pages 選擇從 `main` branch 的 `/site` folder 發布。
+上傳到 GitHub 後，可在 repository 的 Settings -> Pages 選擇從 `main` branch 的 `/docs` folder 發布。
