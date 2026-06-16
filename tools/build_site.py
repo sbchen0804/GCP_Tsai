@@ -26,6 +26,8 @@ CSS = """
   --panel: #ffffff;
   --accent: #0f766e;
   --accent-strong: #134e4a;
+  --highlight: #f59e0b;
+  --highlight-soft: #fff7ed;
 }
 
 * {
@@ -65,6 +67,8 @@ header.site {
 .brand {
   display: grid;
   gap: 2px;
+  color: var(--ink);
+  text-decoration: none;
 }
 
 .brand strong {
@@ -81,7 +85,7 @@ header.site {
 
 nav {
   display: flex;
-  gap: 14px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -91,18 +95,30 @@ nav a,
   align-items: center;
   justify-content: center;
   min-height: 40px;
-  padding: 8px 13px;
+  padding: 8px 14px;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--panel);
   color: var(--ink);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 nav a:hover,
 .button:hover {
   border-color: var(--accent);
+}
+
+nav a[aria-current="page"] {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+nav a.feature-link {
+  border-color: var(--highlight);
+  background: var(--highlight-soft);
+  color: #7c2d12;
+  font-weight: 700;
 }
 
 main {
@@ -142,18 +158,49 @@ p {
   margin: 0 0 16px;
 }
 
+.featured {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  margin: 28px 0 10px;
+  padding: 22px;
+  border: 2px solid var(--highlight);
+  border-radius: 8px;
+  background: var(--highlight-soft);
+  color: #431407;
+  text-decoration: none;
+}
+
+.featured h2 {
+  margin: 0;
+  font-size: clamp(26px, 4vw, 38px);
+}
+
+.featured p {
+  margin: 6px 0 0;
+  color: #7c2d12;
+}
+
+.featured .button {
+  border-color: var(--highlight);
+  background: #ffffff;
+  color: #7c2d12;
+  font-weight: 700;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
-  margin-top: 24px;
+  margin-top: 18px;
 }
 
 .card {
   display: grid;
   align-content: start;
   gap: 12px;
-  min-height: 220px;
+  min-height: 190px;
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -168,7 +215,7 @@ p {
 
 .card h2 {
   margin: 0;
-  font-size: 21px;
+  font-size: 22px;
 }
 
 .card p {
@@ -205,17 +252,26 @@ p {
   color: #263746;
 }
 
-.figure-page {
+.figure-page,
+.media-page {
   display: grid;
   gap: 22px;
 }
 
-.full-image {
+.full-image,
+.media-player {
   width: 100%;
-  height: auto;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
+}
+
+.full-image {
+  height: auto;
+}
+
+.media-player {
+  max-height: 72vh;
 }
 
 footer {
@@ -226,11 +282,21 @@ footer {
   font-size: 14px;
 }
 
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 760px) {
   .mast {
     align-items: flex-start;
     flex-direction: column;
     padding: 16px 0;
+  }
+
+  .featured {
+    grid-template-columns: 1fr;
   }
 
   .grid {
@@ -247,14 +313,15 @@ footer {
 
 def page(title: str, body: str, active: str = "") -> str:
     links = [
-        ("index.html", "首頁"),
-        ("01-gcp-tasi-pdf.html", "PDF 簡報"),
-        ("02-gcp-tasi-word.html", "Word 文章"),
-        ("03-gcp-ban02m-image.html", "圖片"),
+        ("index.html", "1. 首頁", "首頁", ""),
+        ("01-gcp-tasi-pdf.html", "2. 簡報", "簡報", ""),
+        ("02-gcp-tasi-word.html", "3. 文章", "文章", ""),
+        ("03-gcp-ban02m-image.html", "4. 圖片", "圖片", ""),
+        ("04-speech-summary.html", "5. 語音", "語音", "feature-link"),
     ]
     nav = "\n".join(
-        f'<a href="{href}"{" aria-current=\"page\"" if label == active else ""}>{label}</a>'
-        for href, label in links
+        f'<a href="{href}" class="{css_class}"{" aria-current=\"page\"" if key == active else ""}>{label}</a>'
+        for href, label, key, css_class in links
     )
     return f"""<!doctype html>
 <html lang="zh-Hant">
@@ -269,7 +336,7 @@ def page(title: str, body: str, active: str = "") -> str:
     <div class="wrap mast">
       <a class="brand" href="index.html" aria-label="回首頁">
         <strong>蔡憶雲 中醫博士</strong>
-        <span>GCP TASI 線上閱讀資料</span>
+        <span>線上閱讀資料</span>
       </a>
       <nav aria-label="主要導覽">
         {nav}
@@ -292,7 +359,6 @@ def page(title: str, body: str, active: str = "") -> str:
 def clean_paragraphs(docx_path: Path) -> list[str]:
     doc = Document(docx_path)
     paragraphs: list[str] = []
-    carry = ""
     for paragraph in doc.paragraphs:
         text = " ".join(paragraph.text.split())
         if not text:
@@ -303,21 +369,18 @@ def clean_paragraphs(docx_path: Path) -> list[str]:
         if text[0] in "。！，、；：" and paragraphs:
             paragraphs[-1] += text
             continue
-        if carry:
-            text = carry + text
-            carry = ""
         paragraphs.append(text)
     return paragraphs
 
 
 def article_html(docx_path: Path) -> tuple[str, str]:
     paragraphs = clean_paragraphs(docx_path)
-    title = paragraphs[1] if len(paragraphs) > 1 else "02_GCP_TASI"
+    title = paragraphs[1] if len(paragraphs) > 1 else "文章"
     parts: list[str] = [
         '<section class="hero">',
-        '<div class="kicker">02_GCP_TASI Word 轉 HTML</div>',
+        '<div class="kicker">文章</div>',
         f"<h1>{html.escape(title)}</h1>",
-        '<div class="actions"><a class="button" href="assets/02_GCP_TASI.docx">下載原始 Word 檔</a></div>',
+        '<div class="actions"><a class="button" href="assets/02_GCP_TASI.docx">下載原始檔</a></div>',
         "</section>",
         '<article class="article">',
     ]
@@ -355,8 +418,9 @@ def main() -> None:
     pdf = SOURCE / "01_GCP_TASI.pdf"
     docx = SOURCE / "02_GCP_TASI.docx"
     image = SOURCE / "03_GCP_ban02m.png"
+    speech = SOURCE / "04_AI_Speech_Summary.mp4"
 
-    for src in (pdf, docx, image):
+    for src in (pdf, docx, image, speech):
         shutil.copy2(src, ASSETS / src.name)
 
     write(SITE / "styles.css", CSS + "\n")
@@ -365,82 +429,117 @@ def main() -> None:
     with Image.open(image) as img:
         image_width, image_height = img.size
 
+    speech_mb = speech.stat().st_size / 1024 / 1024
+
     index_body = f"""
 <section class="hero">
   <div class="kicker">線上閱讀版</div>
-  <h1>GCP TASI 資料整理</h1>
-  <p class="meta">已整理成 GitHub Pages 可直接瀏覽的 HTML 文件，包含 PDF 簡報、Word 文章與圖片檔。</p>
+  <h1>資料整理</h1>
+  <p class="meta">已整理成可直接瀏覽的網頁，包含簡報、文章、圖片與語音摘要。</p>
 </section>
+<a class="featured" href="04-speech-summary.html">
+  <div>
+    <div class="kicker">新增內容</div>
+    <h2>語音</h2>
+    <p>語音摘要已加入，可直接播放，也可下載保存。</p>
+  </div>
+  <span class="button">前往語音</span>
+</a>
 <section class="grid" aria-label="資料列表">
   <a class="card" href="01-gcp-tasi-pdf.html">
-    <span class="kicker">01_GCP_TASI</span>
-    <h2>PDF 簡報</h2>
-    <p>{pdf_pages} 頁 PDF，使用線上閱讀器嵌入，並提供原始 PDF 下載。</p>
+    <span class="kicker">1</span>
+    <h2>簡報</h2>
+    <p>{pdf_pages} 頁簡報，可線上閱讀並下載原始檔。</p>
   </a>
   <a class="card" href="02-gcp-tasi-word.html">
-    <span class="kicker">02_GCP_TASI</span>
-    <h2>Word 轉 HTML</h2>
-    <p>已將 Word 內容轉成適合手機與桌機閱讀的 HTML 文章頁。</p>
+    <span class="kicker">2</span>
+    <h2>文章</h2>
+    <p>已轉成適合手機與電腦閱讀的文章頁。</p>
   </a>
   <a class="card" href="03-gcp-ban02m-image.html">
-    <span class="kicker">03_GCP_ban02m</span>
-    <h2>圖片檔</h2>
-    <p>原圖尺寸 {image_width} x {image_height}，可直接瀏覽或下載。</p>
+    <span class="kicker">3</span>
+    <h2>圖片</h2>
+    <p>原圖尺寸 {image_width} x {image_height}，可瀏覽或下載。</p>
+  </a>
+  <a class="card" href="04-speech-summary.html">
+    <span class="kicker">4</span>
+    <h2>語音</h2>
+    <p>語音摘要約 {speech_mb:.1f} MB，支援線上播放。</p>
   </a>
 </section>
 """
-    write(SITE / "index.html", page("GCP TASI 資料整理", index_body, "首頁"))
+    write(SITE / "index.html", page("資料整理", index_body, "首頁"))
 
     pdf_body = f"""
 <section class="hero">
-  <div class="kicker">01_GCP_TASI PDF</div>
-  <h1>PDF 簡報線上閱讀</h1>
-  <p class="meta">共 {pdf_pages} 頁。若瀏覽器沒有顯示 PDF，可使用下方按鈕開啟或下載原始檔。</p>
+  <div class="kicker">簡報</div>
+  <h1>簡報線上閱讀</h1>
+  <p class="meta">共 {pdf_pages} 頁。若瀏覽器沒有顯示內容，可使用下方按鈕開啟或下載原始檔。</p>
   <div class="actions">
-    <a class="button" href="assets/01_GCP_TASI.pdf">開啟 PDF</a>
-    <a class="button" href="assets/01_GCP_TASI.pdf" download>下載 PDF</a>
+    <a class="button" href="assets/01_GCP_TASI.pdf">開啟檔案</a>
+    <a class="button" href="assets/01_GCP_TASI.pdf" download>下載檔案</a>
   </div>
 </section>
 <object class="reader" data="assets/01_GCP_TASI.pdf" type="application/pdf">
-  <p>瀏覽器無法內嵌 PDF。請改用 <a href="assets/01_GCP_TASI.pdf">PDF 連結</a> 開啟。</p>
+  <p>瀏覽器無法內嵌簡報。請改用 <a href="assets/01_GCP_TASI.pdf">檔案連結</a> 開啟。</p>
 </object>
 """
-    write(SITE / "01-gcp-tasi-pdf.html", page("01_GCP_TASI PDF", pdf_body, "PDF 簡報"))
+    write(SITE / "01-gcp-tasi-pdf.html", page("簡報", pdf_body, "簡報"))
 
     article_title, article_body = article_html(docx)
-    write(SITE / "02-gcp-tasi-word.html", page(article_title, article_body, "Word 文章"))
+    write(SITE / "02-gcp-tasi-word.html", page(article_title, article_body, "文章"))
 
     image_body = f"""
 <section class="hero">
-  <div class="kicker">03_GCP_ban02m PNG</div>
-  <h1>圖片線上瀏覽</h1>
+  <div class="kicker">圖片</div>
+  <h1>圖片瀏覽</h1>
   <p class="meta">原圖尺寸 {image_width} x {image_height}。</p>
   <div class="actions">
     <a class="button" href="assets/03_GCP_ban02m.png">開啟原圖</a>
-    <a class="button" href="assets/03_GCP_ban02m.png" download>下載 PNG</a>
+    <a class="button" href="assets/03_GCP_ban02m.png" download>下載圖片</a>
   </div>
 </section>
 <section class="figure-page">
-  <img class="full-image" src="assets/03_GCP_ban02m.png" alt="03_GCP_ban02m 圖檔">
+  <img class="full-image" src="assets/03_GCP_ban02m.png" alt="圖片">
 </section>
 """
-    write(SITE / "03-gcp-ban02m-image.html", page("03_GCP_ban02m 圖片", image_body, "圖片"))
+    write(SITE / "03-gcp-ban02m-image.html", page("圖片", image_body, "圖片"))
 
-    readme = """# GCP TASI 線上閱讀資料
+    speech_body = f"""
+<section class="hero">
+  <div class="kicker">語音</div>
+  <h1>語音摘要</h1>
+  <p class="meta">可直接播放語音摘要；若瀏覽器無法播放，請下載原始檔。</p>
+  <div class="actions">
+    <a class="button" href="assets/04_AI_Speech_Summary.mp4">開啟檔案</a>
+    <a class="button" href="assets/04_AI_Speech_Summary.mp4" download>下載語音</a>
+  </div>
+</section>
+<section class="media-page">
+  <video class="media-player" controls preload="metadata">
+    <source src="assets/04_AI_Speech_Summary.mp4" type="video/mp4">
+    您的瀏覽器無法播放此檔案，請使用下載按鈕取得原始檔。
+  </video>
+</section>
+"""
+    write(SITE / "04-speech-summary.html", page("語音", speech_body, "語音"))
+
+    readme = """# 線上閱讀資料
 
 這個資料夾已整理成 GitHub Pages 可發布的靜態網站。
 
 ## 內容
 
-- `site/index.html`: 首頁
-- `site/01-gcp-tasi-pdf.html`: PDF 簡報線上閱讀頁
-- `site/02-gcp-tasi-word.html`: Word 轉換後的 HTML 文章頁
-- `site/03-gcp-ban02m-image.html`: 圖片瀏覽頁
-- `site/assets/`: 原始 PDF、Word、PNG 檔案
+- `docs/index.html`: 首頁
+- `docs/01-gcp-tasi-pdf.html`: 簡報線上閱讀頁
+- `docs/02-gcp-tasi-word.html`: 文章頁
+- `docs/03-gcp-ban02m-image.html`: 圖片瀏覽頁
+- `docs/04-speech-summary.html`: 語音頁
+- `docs/assets/`: 原始檔案
 
 ## GitHub Pages 設定
 
-上傳到 GitHub 後，可在 repository 的 Settings -> Pages 選擇從 `main` branch 的 `/site` folder 發布。
+GitHub Pages 使用 `main` branch 的 `/docs` folder 發布。
 """
     write(ROOT / "README.md", readme)
 
