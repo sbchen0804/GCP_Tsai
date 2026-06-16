@@ -12,7 +12,7 @@ from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "INPUT_source"
-SITE = ROOT / "site"
+SITE = ROOT / "docs"
 ASSETS = SITE / "assets"
 
 
