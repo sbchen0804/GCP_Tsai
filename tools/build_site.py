@@ -14,6 +14,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "INPUT_source"
 SITE = ROOT / "docs"
 ASSETS = SITE / "assets"
+SITE_TITLE = "蔡憶雲博士｜靈芝滴粒見證與健康分享"
+SITE_DESCRIPTION = "蔡憶雲博士靈芝滴粒見證、健康分享、簡報、文章、圖片與語音整理。"
+SITE_URL = "https://sbchen0804.github.io/GCP_Tsai/"
+SHARE_IMAGE = f"{SITE_URL}assets/00_cover_TSAI.webp"
 
 
 CSS = """
@@ -36,7 +40,10 @@ CSS = """
 
 body {
   margin: 0;
-  background: var(--paper);
+  background:
+    linear-gradient(rgb(251 252 253 / 88%), rgb(251 252 253 / 92%)),
+    url("assets/00_BG_001.webp") center top / cover fixed no-repeat,
+    var(--paper);
   color: var(--ink);
   font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
   line-height: 1.72;
@@ -53,7 +60,8 @@ a {
 
 header.site {
   border-bottom: 1px solid var(--line);
-  background: var(--panel);
+  background: rgb(255 255 255 / 94%);
+  backdrop-filter: blur(10px);
 }
 
 .mast {
@@ -380,7 +388,21 @@ def page(title: str, body: str, active: str = "") -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{html.escape(title)}</title>
+  <title>{html.escape(SITE_TITLE)}</title>
+  <meta name="title" content="{html.escape(SITE_TITLE)}">
+  <meta name="description" content="{html.escape(SITE_DESCRIPTION)}">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:site_name" content="{html.escape(SITE_TITLE)}">
+  <meta property="og:title" content="{html.escape(SITE_TITLE)}">
+  <meta property="og:description" content="{html.escape(SITE_DESCRIPTION)}">
+  <meta property="og:url" content="{SITE_URL}">
+  <meta property="og:image" content="{SHARE_IMAGE}">
+  <meta property="og:image:type" content="image/webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{html.escape(SITE_TITLE)}">
+  <meta name="twitter:description" content="{html.escape(SITE_DESCRIPTION)}">
+  <meta name="twitter:image" content="{SHARE_IMAGE}">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body id="top">
@@ -484,6 +506,8 @@ def main() -> None:
     image_a = SOURCE / "03A_GCP_comic.jpg"
     image_b = SOURCE / "03B_GCP_comic.JPG"
     speech = SOURCE / "04_AI_Speech_Summary.mp4"
+    cover = SOURCE / "00_cover_TSAI.webp"
+    background = SOURCE / "00_BG_001.webp"
 
     asset_names = {
         pdf: "01A_GCP_Tsai.pdf",
@@ -492,6 +516,8 @@ def main() -> None:
         image_a: "03A_GCP_comic.jpg",
         image_b: "03B_GCP_comic.jpg",
         speech: "04_AI_Speech_Summary.mp4",
+        cover: "00_cover_TSAI.webp",
+        background: "00_BG_001.webp",
     }
 
     for src, name in asset_names.items():
