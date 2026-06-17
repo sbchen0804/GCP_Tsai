@@ -6,7 +6,7 @@
   <title>圖片</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body id="top">
   <header class="site">
     <div class="wrap mast">
       <a class="brand" href="index.html" aria-label="回首頁">
@@ -29,18 +29,32 @@
 <section class="hero">
   <div class="kicker">圖片</div>
   <h1>圖片瀏覽</h1>
-  <p class="meta">原圖尺寸 1085 x 1450。</p>
+  <p class="meta">共三張圖片：原圖、3A、3B。</p>
   <div class="actions">
     <a class="button" href="assets/03_GCP_ban02m.png">開啟原圖</a>
     <a class="button" href="assets/03_GCP_ban02m.png" download>下載圖片</a>
+    <a class="button" href="assets/03A_GCP_comic.jpg">開啟 3A</a>
+    <a class="button" href="assets/03B_GCP_comic.jpg">開啟 3B</a>
   </div>
 </section>
 <section class="figure-page">
-  <img class="full-image" src="assets/03_GCP_ban02m.png" alt="圖片">
+  <figure class="figure-block">
+    <img class="full-image" src="assets/03_GCP_ban02m.png" alt="圖片">
+    <figcaption>原圖：1085 x 1450</figcaption>
+  </figure>
+  <figure class="figure-block">
+    <img class="full-image" src="assets/03A_GCP_comic.jpg" alt="3A 圖片">
+    <figcaption>3A：1046 x 1512</figcaption>
+  </figure>
+  <figure class="figure-block">
+    <img class="full-image" src="assets/03B_GCP_comic.jpg" alt="3B 圖片">
+    <figcaption>3B：2250 x 3250</figcaption>
+  </figure>
 </section>
 
     </div>
   </main>
+  <a class="go-top" href="#top" aria-label="回到頂端" title="回到頂端">↑<span>Go Top</span></a>
   <footer>
     <div class="wrap">本頁面為 GitHub Pages 靜態網站版本，保留原始檔供下載與備份。</div>
   </footer>

@@ -285,6 +285,46 @@ p {
   max-height: 72vh;
 }
 
+.figure-block {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.figure-block figcaption {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.go-top {
+  position: fixed;
+  right: 18px;
+  bottom: 24px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-strong);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 24px;
+  line-height: 1;
+  box-shadow: 0 10px 30px rgb(15 76 70 / 22%);
+}
+
+.go-top span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 footer {
   padding: 28px 0;
   border-top: 1px solid var(--line);
@@ -343,7 +383,7 @@ def page(title: str, body: str, active: str = "") -> str:
   <title>{html.escape(title)}</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body id="top">
   <header class="site">
     <div class="wrap mast">
       <a class="brand" href="index.html" aria-label="回首頁">
@@ -360,6 +400,7 @@ def page(title: str, body: str, active: str = "") -> str:
       {body}
     </div>
   </main>
+  <a class="go-top" href="#top" aria-label="回到頂端" title="回到頂端">↑<span>Go Top</span></a>
   <footer>
     <div class="wrap">本頁面為 GitHub Pages 靜態網站版本，保留原始檔供下載與備份。</div>
   </footer>
@@ -430,20 +471,26 @@ def main() -> None:
         SITE / "01-gcp-tasi-pdf.html",
         SITE / "02-gcp-tasi-word.html",
         ASSETS / "01_GCP_TASI.pdf",
+        ASSETS / "01_GCP_Tsai.pdf",
+        ASSETS / "01A_GCP_TSAI.pdf",
         ASSETS / "02_GCP_TASI.docx",
     ):
         if stale.exists():
             stale.unlink()
 
-    pdf = SOURCE / "01_GCP_TASI.pdf"
+    pdf = SOURCE / "01A_GCP_TSAI.pdf"
     docx = SOURCE / "02_GCP_TASI.docx"
     image = SOURCE / "03_GCP_ban02m.png"
+    image_a = SOURCE / "03A_GCP_comic.jpg"
+    image_b = SOURCE / "03B_GCP_comic.JPG"
     speech = SOURCE / "04_AI_Speech_Summary.mp4"
 
     asset_names = {
-        pdf: "01_GCP_Tsai.pdf",
+        pdf: "01A_GCP_Tsai.pdf",
         docx: "02_GCP_Tsai.docx",
         image: "03_GCP_ban02m.png",
+        image_a: "03A_GCP_comic.jpg",
+        image_b: "03B_GCP_comic.jpg",
         speech: "04_AI_Speech_Summary.mp4",
     }
 
@@ -455,6 +502,10 @@ def main() -> None:
     pdf_pages = len(PdfReader(str(pdf)).pages)
     with Image.open(image) as img:
         image_width, image_height = img.size
+    with Image.open(image_a) as img_a:
+        image_a_width, image_a_height = img_a.size
+    with Image.open(image_b) as img_b:
+        image_b_width, image_b_height = img_b.size
 
     speech_mb = speech.stat().st_size / 1024 / 1024
 
@@ -486,7 +537,7 @@ def main() -> None:
   <a class="card" href="03-gcp-ban02m-image.html">
     <span class="kicker">3</span>
     <h2>圖片</h2>
-    <p>原圖尺寸 {image_width} x {image_height}，可瀏覽或下載。</p>
+    <p>已加入原圖、3A、3B 三張圖片，可瀏覽或下載。</p>
   </a>
   <a class="card" href="04-speech-summary.html">
     <span class="kicker">4</span>
@@ -508,12 +559,12 @@ def main() -> None:
   <h1>簡報線上閱讀</h1>
   <p class="meta">共 {pdf_pages} 頁。若瀏覽器沒有顯示內容，可使用下方按鈕開啟或下載原始檔。</p>
   <div class="actions">
-    <a class="button" href="assets/01_GCP_Tsai.pdf">開啟檔案</a>
-    <a class="button" href="assets/01_GCP_Tsai.pdf" download>下載檔案</a>
+    <a class="button" href="assets/01A_GCP_Tsai.pdf">開啟檔案</a>
+    <a class="button" href="assets/01A_GCP_Tsai.pdf" download>下載檔案</a>
   </div>
 </section>
-<object class="reader" data="assets/01_GCP_Tsai.pdf" type="application/pdf">
-  <p>瀏覽器無法內嵌簡報。請改用 <a href="assets/01_GCP_Tsai.pdf">檔案連結</a> 開啟。</p>
+<object class="reader" data="assets/01A_GCP_Tsai.pdf" type="application/pdf">
+  <p>瀏覽器無法內嵌簡報。請改用 <a href="assets/01A_GCP_Tsai.pdf">檔案連結</a> 開啟。</p>
 </object>
 """
     write(SITE / "01-gcp-tsai-pdf.html", page("簡報", pdf_body, "簡報"))
@@ -525,14 +576,27 @@ def main() -> None:
 <section class="hero">
   <div class="kicker">圖片</div>
   <h1>圖片瀏覽</h1>
-  <p class="meta">原圖尺寸 {image_width} x {image_height}。</p>
+  <p class="meta">共三張圖片：原圖、3A、3B。</p>
   <div class="actions">
     <a class="button" href="assets/03_GCP_ban02m.png">開啟原圖</a>
     <a class="button" href="assets/03_GCP_ban02m.png" download>下載圖片</a>
+    <a class="button" href="assets/03A_GCP_comic.jpg">開啟 3A</a>
+    <a class="button" href="assets/03B_GCP_comic.jpg">開啟 3B</a>
   </div>
 </section>
 <section class="figure-page">
-  <img class="full-image" src="assets/03_GCP_ban02m.png" alt="圖片">
+  <figure class="figure-block">
+    <img class="full-image" src="assets/03_GCP_ban02m.png" alt="圖片">
+    <figcaption>原圖：{image_width} x {image_height}</figcaption>
+  </figure>
+  <figure class="figure-block">
+    <img class="full-image" src="assets/03A_GCP_comic.jpg" alt="3A 圖片">
+    <figcaption>3A：{image_a_width} x {image_a_height}</figcaption>
+  </figure>
+  <figure class="figure-block">
+    <img class="full-image" src="assets/03B_GCP_comic.jpg" alt="3B 圖片">
+    <figcaption>3B：{image_b_width} x {image_b_height}</figcaption>
+  </figure>
 </section>
 """
     write(SITE / "03-gcp-ban02m-image.html", page("圖片", image_body, "圖片"))

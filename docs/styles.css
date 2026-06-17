@@ -266,6 +266,46 @@ p {
   max-height: 72vh;
 }
 
+.figure-block {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.figure-block figcaption {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.go-top {
+  position: fixed;
+  right: 18px;
+  bottom: 24px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-strong);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 24px;
+  line-height: 1;
+  box-shadow: 0 10px 30px rgb(15 76 70 / 22%);
+}
+
+.go-top span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 footer {
   padding: 28px 0;
   border-top: 1px solid var(--line);
