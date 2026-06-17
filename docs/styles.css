@@ -18,12 +18,13 @@
 body {
   margin: 0;
   background:
-    linear-gradient(rgb(251 252 253 / 88%), rgb(251 252 253 / 92%)),
-    url("assets/00_BG_001.webp") center top / cover fixed no-repeat,
+    linear-gradient(rgb(251 252 253 / 68%), rgb(251 252 253 / 78%)),
+    url("assets/00_BG_001.webp?v=20260617") center top / cover no-repeat,
     var(--paper);
   color: var(--ink);
   font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
   line-height: 1.72;
+  min-height: 100vh;
 }
 
 a {

@@ -17,7 +17,9 @@ ASSETS = SITE / "assets"
 SITE_TITLE = "蔡憶雲博士｜靈芝滴粒見證與健康分享"
 SITE_DESCRIPTION = "蔡憶雲博士靈芝滴粒見證、健康分享、簡報、文章、圖片與語音整理。"
 SITE_URL = "https://sbchen0804.github.io/GCP_Tsai/"
-SHARE_IMAGE = f"{SITE_URL}assets/00_cover_TSAI.webp"
+SITE_VERSION = "20260617"
+SITE_SHARE_URL = f"{SITE_URL}?v={SITE_VERSION}"
+SHARE_IMAGE = f"{SITE_URL}assets/00_cover_TSAI.webp?v={SITE_VERSION}"
 
 
 CSS = """
@@ -41,12 +43,13 @@ CSS = """
 body {
   margin: 0;
   background:
-    linear-gradient(rgb(251 252 253 / 88%), rgb(251 252 253 / 92%)),
-    url("assets/00_BG_001.webp") center top / cover fixed no-repeat,
+    linear-gradient(rgb(251 252 253 / 68%), rgb(251 252 253 / 78%)),
+    url("assets/00_BG_001.webp?v=20260617") center top / cover no-repeat,
     var(--paper);
   color: var(--ink);
   font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
   line-height: 1.72;
+  min-height: 100vh;
 }
 
 a {
@@ -396,7 +399,7 @@ def page(title: str, body: str, active: str = "") -> str:
   <meta property="og:site_name" content="{html.escape(SITE_TITLE)}">
   <meta property="og:title" content="{html.escape(SITE_TITLE)}">
   <meta property="og:description" content="{html.escape(SITE_DESCRIPTION)}">
-  <meta property="og:url" content="{SITE_URL}">
+  <meta property="og:url" content="{SITE_SHARE_URL}">
   <meta property="og:image" content="{SHARE_IMAGE}">
   <meta property="og:image:type" content="image/webp">
   <meta name="twitter:card" content="summary_large_image">
